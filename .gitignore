@@ -1,3 +1,4 @@
 /app/tmp
 *.tmproj
 /app/config/core.php
+/app/config/database.php
