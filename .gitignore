@@ -1,1 +1,3 @@
 /app/tmp
+*.tmproj
+/app/config/core.php
