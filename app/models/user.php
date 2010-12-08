@@ -35,11 +35,18 @@ class User extends AppModel {
 	);
 	
 	function confirmPasswordsMatch($check) {
-		if($this->data['User']['password'] == $this->data['User']['password_confirm']) {
-			return true;
-		}
-		return false;
+		return $this->data['User']['password'] == $this->data['User']['password_confirm'];
 	}
+
+	function afterSave() {
+		
+	}
+	
+	function getActivationHash() {
+		if(!isset($this->id)) return false;
+		return Security::hash($this->field('username') . $this->field('created'), null, true);
+	}
+	
 }
 
 ?>

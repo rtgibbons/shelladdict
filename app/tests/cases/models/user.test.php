@@ -67,24 +67,24 @@ class UserTestCase extends CakeTestCase {
 		)));
 	}
 	
-	function testPasswordHashed() {
-		
-		$this->User->save(array(
-			'username' => 'username',
-			'email' => 'email@example.com',
-			'password' => 'password',
-			'password_confirm' => 'password'
-		));
-		
-		$result = $this->User->find('first', array(
-			'conditions' => array(
-				'User.username' => 'username'
-			),
-			'fields' => array('password')
-		));
-		
-		$this->assertTrue(preg_match('/[a-z0-9]{64}/', $result['User']['password']));
-	}
+	// function testPasswordHashed() {
+	// 	
+	// 	$this->User->save(array(
+	// 		'username' => 'username',
+	// 		'email' => 'email@example.com',
+	// 		'password' => 'password',
+	// 		'password_confirm' => 'password'
+	// 	));
+	// 	
+	// 	$result = $this->User->find('first', array(
+	// 		'conditions' => array(
+	// 			'User.username' => 'username'
+	// 		),
+	// 		'fields' => array('password')
+	// 	));
+	// 	
+	// 	$this->assertTrue(preg_match('/[a-z0-9]{64}/', $result['User']['password']));
+	// }
 	
 }
 

@@ -2,11 +2,15 @@
 
 class UsersControllerTest extends CakeTestCase { 
 
+	function startCase() {
+		//CAKEPHP_UNIT_TEST_EXECUTION = true;
+	}
+
 	function testLogin() {
 		
 		$data = array('User' => array(
 			'username' => 'username',
-			'password' => 'p4ssw0rd' // real password should be password
+			'password' => 'password' // real password should be password
 		));
 		
 		$result = $this->testAction('/addict/login', array(
@@ -15,7 +19,7 @@ class UsersControllerTest extends CakeTestCase {
 			'method' => 'post'
 		));
 		
-		debug('This test need to be writtern');
+		debug($result);
 		
 		$this->assertTrue(false);
 		

@@ -2,13 +2,21 @@
 
 class UsersController extends AppController {
 	
-	var $components = array('Auth');
+	var $components = array('Auth', 'Email');
 	
 	function beforeFilter() {
-		$this->Auth->allow('login', 'create', 'profile');
+		parent::beforeFilter();
 		$this->Auth->logoutRedirect = '/';
 		$this->Auth->loginRedirect = '/addict/';
-		parent::beforeFilter();
+		$this->Auth->userScope = array('User.active' => true);
+		
+		$this->Auth->allow('login', 'create', 'profile', 'activate');
+		
+	}
+	
+	function login() {}
+	function logout() {
+		$this->redirect($this->Auth->logout());
 	}
 	
 	function create() {	
@@ -20,9 +28,9 @@ class UsersController extends AppController {
 			
 
 			if($this->User->save($this->data)) {
-				$this->Session->setFlash("Account Saved!");
-				$this->redirect('/addict/register/successful');
-				exit();
+				$this->sendActivationEmail();
+				$this->Session->setFlash("An Activation email has been sent to your account!");
+				$this->redirect('/addict/check-email-for-verification');
 			} else {
 				// clear these out so the hashes aren't populated if the account creation fails
 				$this->data['User']['password'] = '';
@@ -31,7 +39,27 @@ class UsersController extends AppController {
 		}
 	}
 
-	// take user to their profile if logged in or go to the homepage
+	function activate() {
+
+		$user = $this->User->findById($this->params['userId']);
+		if(!empty($user)){
+
+			$this->User->id = $user['User']['id'];
+
+			if($this->User->getActivationHash() == $this->params['activationHash']) {
+				$this->User->saveField('active', 1);
+				$this->Session->setFlash('Your account has been activated! Please log in below.');
+				$this->redirect('/addict/login/');
+			}
+			
+			// the hash was wrong
+			$this->cakeError('error500');
+		} else {
+			// user wasn't in the database
+			$this->cakeError('error404');
+		}
+	}
+
 	function index() {
 		$user = $this->Auth->user();
 		if(!empty($user)) {
@@ -45,21 +73,40 @@ class UsersController extends AppController {
 	function profile() {
 		$user = $this->User->find('first', array(
 			'conditions' => array(
-				'username' => $this->passedArgs[0]
+				'username' => $this->passedArgs[0],
+				'active' => 1
 			)
 		));
 		
 		if(empty($user)) {
 			$this->cakeError('error404');
+			exit();
+		} else {
+			$this->User->id = $user['User']['id'];
 		}
-	}
-
-	function login() {
 		
 	}
-
-	function logout() {
-		$this->redirect($this->Auth->logout());
+	
+	private function sendActivationEmail() {
+		
+		$this->Email->smtpOptions = array(
+			'port'=>'1025', 
+			'timeout'=>'30',
+			'auth' => true,
+			'host' => 'localhost',
+		);
+		
+		$this->Email->from    = 'Shell Addict <admin@shelladdict.com>';
+		$this->Email->replyTo = 'admin@shelladdict.com';
+		$this->Email->to      = $this->data['User']['email'];
+		$this->Email->subject = 'ShellAddict Account Activation';
+		$this->Email->template = 'accountActivation';
+		$this->Email->sendAs = 'both';
+		$this->set('activationLink', 'http://' . $_SERVER['SERVER_NAME'] . '/addict/activate/' . $this->User->id . '/' . $this->User->getActivationHash());
+		$this->Email->delivery = 'smtp';
+		$this->Email->send();
+		//$this->set('smtp_errors', $this->Email->smtpError);
+		
 	}
 	
 }

@@ -25,6 +25,8 @@
 Router::connect('/addict/login', array('controller' => 'users', 'action' => 'login'));
 Router::connect('/addict/logout', array('controller' => 'users', 'action' => 'logout'));
 Router::connect('/addict/register', array('controller' => 'users', 'action' => 'create'));
+Router::connect('/addict/check-email-for-verification', array('controller' => 'pages', 'action' => 'display', 'check-email-for-verification'));
+Router::connect('/addict/activate/:userId/:activationHash', array('controller' => 'users', 'action' => 'activate'), array('pass' => array('userId', 'activationHash')));
 
 Router::connect('/addict/:username', array('controller' => 'users', 'action' => 'profile'), array('pass' => array('username')));
 Router::connect('/addict', array('controller' => 'users', 'action' => 'index'));
