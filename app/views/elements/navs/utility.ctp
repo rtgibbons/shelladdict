@@ -1,4 +1,4 @@
-	<nav>
+	<nav id="UtilityNav">
 		<ul>
 <?php if($session->check('Auth.User')): ?>
 		<li><a href="/addict/<?php echo $session->read('Auth.User.username'); ?>">My Dashboard</a></li>

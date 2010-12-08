@@ -10,12 +10,13 @@
 <?php endif; ?>
 
 	<link rel="stylesheet" href="/css/reset.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="/css/shelladdict.css" type="text/css" media="screen" />
 	
 </head>
 <body>
 	<header>
-		<h1><a href="/">Shell Addict</a></h1>
 		<?php echo $this->element('navs/utility'); ?>
+		<h1><a href="/">Shell Addict</a></h1>
 	</header>
 
 	<?php echo $this->Session->flash(); ?>
@@ -25,8 +26,6 @@
 	<footer>
 		<p>Created by <a href="http://www.bwigg.com" target="_blank">Brian Wigginton</a> and <a href="http://www.gibbonsr.net" target="_blank">Ryan Gibbons</a></p>
 	</footer>
-
-
 
 	<script type="text/javascript" src="/js/modernizr-1-1.6.min.js"></script>
 	<?php echo $scripts_for_layout ?>

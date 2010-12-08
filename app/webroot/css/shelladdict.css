@@ -1,0 +1,9 @@
+#UtilityNav { text-align: right; }
+#UtilityNav ul { background: #efefef; display: inline; padding: 7px; }
+#UtilityNav ul li { display: inline; }
+#UtilityNav #UserLoginForm {display: inline; }
+#UtilityNav #UserLoginForm div { display: inline; }
+
+header h1 { font-size: 190%; }
+
+footer { text-align: center; }
