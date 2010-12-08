@@ -2,3 +2,4 @@
 *.tmproj
 /app/config/core.php
 /app/config/database.php
+.DS_Store
