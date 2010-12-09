@@ -3,6 +3,7 @@
 class UsersController extends AppController {
 	
 	var $components = array('Auth', 'Email');
+	var $helpers = array('form');
 	
 	function beforeFilter() {
 		parent::beforeFilter();
@@ -26,7 +27,6 @@ class UsersController extends AppController {
 			// hash the password_confirmation since the auth component automatically hashes the password field if there is a username field as well
 			$this->data['User']['password_confirm'] = Security::hash($this->data['User']['password_confirm'], null, true);
 			
-
 			if($this->User->save($this->data)) {
 				$this->sendActivationEmail();
 				$this->Session->setFlash("An Activation email has been sent to your account!");
@@ -35,6 +35,49 @@ class UsersController extends AppController {
 				// clear these out so the hashes aren't populated if the account creation fails
 				$this->data['User']['password'] = '';
 				$this->data['User']['password_confirm'] = '';
+			}
+		}
+	}
+
+	function index() {
+		$user = $this->Auth->user();
+		if(!empty($user)) {
+			$this->redirect('/addict/'.$user['User']['username']);
+		} else {
+			$this->redirect('/');
+		}
+		exit();
+	}
+
+	function edit() {
+		if(!empty($this->data)) {
+			// is the user updating their password?
+			if(isset($this->data['User']['password']) && isset($this->data['User']['password_confirm'])) {
+				
+				$this->User->set($this->data);
+				$this->User->id = $this->Session->read('Auth.User.id');
+				
+				// check that the passwords are valid
+				if($this->User->validates(array('fieldList' => array('password', 'password_confirm')))) {
+				
+					// hash the passwords
+					$password = Security::hash($this->data['User']['password'], null, true);
+					$password_confirm = Security::hash($this->data['User']['password_confirm'], null, true);
+				
+					if($this->User->saveField('password', $password)) {
+						$this->Session->setFlash('Your password has been updated successfully.');
+					} else {
+						$this->Session->setFlash('There was a problem saving your password', 'error');
+					}
+					
+				} else {
+					$this->User->invalidFields();
+				}
+				
+				// clear out the fields
+				$this->data['User']['password'] = '';
+				$this->data['User']['password_confirm'] = '';
+				
 			}
 		}
 	}
@@ -59,32 +102,30 @@ class UsersController extends AppController {
 			$this->cakeError('error404');
 		}
 	}
-
-	function index() {
-		$user = $this->Auth->user();
-		if(!empty($user)) {
-			$this->redirect('/addict/'.$user['User']['username']);
-		} else {
-			$this->redirect('/');
-		}
-		exit();
-	}
 	
 	function profile() {
+
 		$user = $this->User->find('first', array(
 			'conditions' => array(
 				'username' => $this->passedArgs[0],
 				'active' => 1
-			)
+			),
 		));
 		
+		// error out if the user doesn't exist or isn't active
 		if(empty($user)) {
 			$this->cakeError('error404');
 			exit();
-		} else {
-			$this->User->id = $user['User']['id'];
 		}
-		
+
+		// check if the profile is for the currently authenticated user
+		$isCurrentUser = false;
+		if($this->Session->read('Auth.User.username') == $user['User']['username']) {
+			$isCurrentUser = true;
+		}
+
+		$this->set('user', $user);
+		$this->set('isCurrentUser', $isCurrentUser);		
 	}
 	
 	private function sendActivationEmail() {

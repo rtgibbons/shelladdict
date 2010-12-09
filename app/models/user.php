@@ -6,7 +6,7 @@ App::import('Security');
 class User extends AppModel {
 	
 	var $name = "User";
-	
+		
 	var $validate = array(
 		'username' => array(
 			'alphaNumericOnly' => array(
@@ -23,14 +23,14 @@ class User extends AppModel {
 			'message' => 'Please enter a valid email.'
 		),
 		'password' => array(
+			'matchesConfirmPassword' => array(
+				'rule' => array('confirmPasswordsMatch'),
+				'message' => 'Passwords do not match'
+			),
 			'minlength' => array(
 				'rule' => array('minLength', 6),
 				'message' => 'Password must be at least 6 characters'
 			),
-			'matchesConfirmPassword' => array(
-				'rule' => array('confirmPasswordsMatch'),
-				'message' => 'Passwords do not match'
-			)
 		)
 	);
 	

@@ -1,7 +1,8 @@
 	<nav id="UtilityNav">
 		<ul>
 <?php if($session->check('Auth.User')): ?>
-		<li><a href="/addict/<?php echo $session->read('Auth.User.username'); ?>">My Dashboard</a></li>
+		<li><a href="/addict/<?php echo $session->read('Auth.User.username'); ?>"><?php echo $session->read('Auth.User.username'); ?></a></li>
+		<li><a href="/addict/settings">Account Settings</a></li>
 		<li><a href="/addict/logout">Logout</a></li>
 <?php else: ?>
 		<li><a href="/addict/register">Register</a></li>

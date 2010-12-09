@@ -1,3 +1,8 @@
+/* form error messages */
+form div.error .error-message { color: #f00; }
+/* flash messages */
+#flashMessage.message { color:#0C0; }
+
 #UtilityNav { text-align: right; }
 #UtilityNav ul { background: #efefef; display: inline; padding: 7px; }
 #UtilityNav ul li { display: inline; }
@@ -5,5 +10,8 @@
 #UtilityNav #UserLoginForm div { display: inline; }
 
 header h1 { font-size: 190%; }
+
+h2 { font-size: 150%; }
+h3 { font-size: 130%; }
 
 footer { text-align: center; }
